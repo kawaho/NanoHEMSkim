@@ -1,0 +1,7 @@
+*__init__*
+*.pyc
+*.root
+*.xml
+*.log
+*.json
+!NanoAOD_HEM_MC.json

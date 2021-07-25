@@ -1,0 +1,22 @@
+# this is a comment
+drop * # start with all
+keep n*Jet*
+keep Flag*
+keep CorrT1METJet*
+keep RawMET*
+keep GenJet*
+keep fixedGridRhoFastjetAll
+keep Pileup_nTrueInt
+keep Electron*
+keep Photon*
+keep Muon*
+keep Tau*
+keep Jet*
+keep MET*
+keep HLT*_IsoMu*
+keep HLT*_Mu*_Ele*
+keep *Weight*
+keep GenPart*
+keep run
+keep event
+keep lumi*
