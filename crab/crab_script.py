@@ -23,9 +23,11 @@ from PhysicsTools.NanoAODTools.postprocessing.NanoHEMSkim.cleaning import *
 from PhysicsTools.NanoAODTools.postprocessing.NanoHEMSkim.Zpt_reweight import *
 
 parser = argparse.ArgumentParser("")
+parser.add_argument('-jobNum', '--jobNum', type=str, default='1', help="")
 parser.add_argument('-isMC', '--isMC', type=int, default=1, help="")
 parser.add_argument('-era', '--era', type=str, default="2017", help="")
 args = parser.parse_args()
+print "args = ",args
 isMC = args.isMC
 era = args.era
 print "isMC = ",isMC," era = ",era
@@ -44,37 +46,43 @@ selections_emu="(Sum$(%s&&!%s)==0 && Sum$(%s)==1 && Sum$(%s&&!%s)==0 && Sum$(%s)
 
 selections_mumu="(Sum$(%s)==0 && Sum$(%s&&!%s)==0 && Sum$(%s)==2)"%(ElectronVeto, MuonVeto, MuonSel_low, MuonSel_low)
 
-selections = selections_emu+"||"+selections_mumu
+METFilters = "(Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_eeBadScFilter && Flag_ecalBadCalibFilter)" # && Flag_BadPFMuonDzFilter 
+
+if not '2016' in era:
+  METFilters.replace(")",  "&& Flag_eeBadScFilter)")
+
+selections = "("+selections_emu+"||"+selections_mumu+")&&"+METFilters
 
 inputFiles = ["../../../../GG.root"]
-
 if era == "2018":
   jmeCorrections_2018UL = createJMECorrector(isMC=True, dataYear="UL2018", jesUncert="Merged", applyHEMfix=True)
+  jmeCorrections_2018UL = createJMECorrector(isMC=False, dataYear="UL2018", jesUncert="Merged", applyHEMfix=True)
   if isMC:
     p = PostProcessor(".",
                   inputFiles,
                   selections,
                   branchsel="keep_and_drop_in.txt",
                   outputbranchsel="keep_and_drop_out.txt",
-                  modules=[jmeCorrections_2018UL(), MuonSFTrig_2018UL(), MuonSFID_2018UL(), MuonSFISO_2018UL(), ElectronSFReco_2018UL(), ElectronSFID_2018UL(), cleaning_2018UL(), btagSF_jet_2018UL(), puWeight_UL2018(), Zpt_reweightUL(), muonScaleRes2018UL()],
+                  modules=[jmeCorrections_2018UL(), cleaning_2018UL()],#, MuonSFTrig_2018UL(), MuonSFID_2018UL(), MuonSFISO_2018UL(), ElectronSFReco_2018UL(), ElectronSFID_2018UL(), cleaning_2018UL(), btagSF_jet_2018UL(), puWeight_UL2018(), Zpt_reweightUL(), muonScaleRes2018UL()],
                   provenance=True,
                   fwkJobReport=True,
                   jsonInput=runsAndLumis())
   else:
     p = PostProcessor(".",
-                  inputFiles,
+                  inputFiles(),
                   selections,
                   branchsel="keep_and_drop_in.txt",
                   outputbranchsel="keep_and_drop_out.txt",
-                  modules=[jmeCorrections_2018UL(), cleaning_2018UL(), muonScaleRes2018UL()],
+                  modules=[jmeCorrections_2018UL_data(), cleaning_2018UL(), muonScaleRes2018UL()],
                   provenance=True,
                   fwkJobReport=True,
                   jsonInput=runsAndLumis())
 elif era == "2017":
   jmeCorrections_2017UL = createJMECorrector(isMC=True, dataYear="UL2017", jesUncert="Merged")
+  jmeCorrections_2017UL_data = createJMECorrector(isMC=False, dataYear="UL2017", jesUncert="Merged")
   if isMC:
     p = PostProcessor(".",
-                  inputFiles,
+                  inputFiles(),
                   selections,
                   branchsel="keep_and_drop_in.txt",
                   outputbranchsel="keep_and_drop_out.txt",
@@ -84,20 +92,22 @@ elif era == "2017":
                   jsonInput=runsAndLumis())
   else:
     p = PostProcessor(".",
-                  inputFiles,
+                  inputFiles(),
                   selections,
                   branchsel="keep_and_drop_in.txt",
                   outputbranchsel="keep_and_drop_out.txt",
-                  modules=[jmeCorrections_2017UL(), cleaning_2017UL(), muonScaleRes2017UL()],
+                  modules=[jmeCorrections_2017UL_data(), cleaning_2017UL(), muonScaleRes2017UL()],
                   provenance=True,
                   fwkJobReport=True,
                   jsonInput=runsAndLumis())
 
 elif era == "2016postVFP":
+  METFilters = METFilters2016
   jmeCorrections_2016postVFPUL = createJMECorrector(isMC=True, dataYear="UL2016", jesUncert="Merged")
+  jmeCorrections_2016postVFPUL_data = createJMECorrector(isMC=False, dataYear="UL2016", jesUncert="Merged")
   if isMC:
     p = PostProcessor(".",
-                  inputFiles,
+                  inputFiles(),
                   selections,
                   branchsel="keep_and_drop_in.txt",
                   outputbranchsel="keep_and_drop_out.txt",
@@ -107,20 +117,22 @@ elif era == "2016postVFP":
                   jsonInput=runsAndLumis())
   else:
     p = PostProcessor(".",
-                  inputFiles,
+                  inputFiles(),
                   selections,
                   branchsel="keep_and_drop_in.txt",
                   outputbranchsel="keep_and_drop_out.txt",
-                  modules=[jmeCorrections_2016postVFPUL(), cleaning_2016postVFPUL(), muonScaleRes2016postVFPUL()],
+                  modules=[jmeCorrections_2016postVFPUL_data(), cleaning_2016postVFPUL(), muonScaleRes2016postVFPUL()],
                   provenance=True,
                   fwkJobReport=True,
                   jsonInput=runsAndLumis())
 
 elif era == "2016preVFP":
+  METFilters = METFilters2016
   jmieCorrections_2016preVFPUL = createJMECorrector(isMC=True, dataYear="UL2016_preVFP", jesUncert="Merged")
+  jmieCorrections_2016preVFPUL_data = createJMECorrector(isMC=False, dataYear="UL2016_preVFP", jesUncert="Merged")
   if isMC:
     p = PostProcessor(".",
-                  inputFiles,
+                  inputFiles(),
                   selections,
                   branchsel="keep_and_drop_in.txt",
                   outputbranchsel="keep_and_drop_out.txt",
@@ -130,11 +142,11 @@ elif era == "2016preVFP":
                   jsonInput=runsAndLumis())
   else:
     p = PostProcessor(".",
-                  inputFiles,
+                  inputFiles(),
                   selections,
                   branchsel="keep_and_drop_in.txt",
                   outputbranchsel="keep_and_drop_out.txt",
-                  modules=[jmeCorrections_2016preVFPUL(), cleaning_2016preVFPUL(), muonScaleRes2016preVFPUL()],
+                  modules=[jmeCorrections_2016preVFPUL_data(), cleaning_2016preVFPUL(), muonScaleRes2016preVFPUL()],
                   provenance=True,
                   fwkJobReport=True,
                   jsonInput=runsAndLumis())

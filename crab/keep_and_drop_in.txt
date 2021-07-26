@@ -1,5 +1,6 @@
 # this is a comment
 drop * # start with all
+keep TrigObj*
 keep n*Jet*
 keep Flag*
 keep CorrT1METJet*

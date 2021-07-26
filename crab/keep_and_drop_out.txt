@@ -1,6 +1,7 @@
 # this is a comment
 drop * # start with all
 keep channel
+keep TrigObj*
 keep n*Jet*
 keep genZ*
 keep Flag*

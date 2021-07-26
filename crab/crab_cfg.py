@@ -5,7 +5,7 @@ import json
 
 config = config()
 config.section_("General")
-config.General.requestName = 'NanoPost'
+config.General.requestName = 'NanoPost1'
 config.General.transferLogs = True
 config.General.workArea = '/afs/cern.ch/work/k/kaho/crabspace/'
 config.section_("JobType")
@@ -20,13 +20,13 @@ config.section_("Data")
 config.Data.inputDataset = '/GluGlu_LFV_HToEMu_M125_TuneCP5_13TeV_PSweights_powheg_pythia8/RunIISummer20UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM'
 #config.Data.inputDBS = 'phys03'
 config.Data.inputDBS = 'global'
-config.Data.splitting = 'Automatic'
-#config.Data.splitting = 'FileBased'
+#config.Data.splitting = 'Automatic'
+config.Data.splitting = 'FileBased'
 #config.Data.splitting = 'EventAwareLumiBased'
-#config.Data.unitsPerJob = 2
+config.Data.unitsPerJob = 2
 #config.Data.totalUnits = 10
 
-config.Data.outLFNDirBase = '/store/user/kaho/NanoPost' 
+config.Data.outLFNDirBase = '/store/user/kaho/NanoPost_' 
 #config.Data.outLFNDirBase = '/store/user/%s/NanoPost' % (
 #    getUsernameFromSiteDB())
 config.Data.publication = False
@@ -45,11 +45,19 @@ if __name__ == '__main__':
     samples = json.load(f)
     print 'isMC=%s'%isMC,'era=%s'%era
     from CRABAPI.RawCommand import crabCommand
+    if not isMC:
+      if '2016' in era:
+        config.Data.lumiMask = 'Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt'
+      elif era=='2017':
+        config.Data.lumiMask = 'Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt'
+      elif era=='2018':
+        config.Data.lumiMask = 'Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt'
     for sample_shorthand, sample in samples.iteritems():
         print "Submitting Jobs for "+sample_shorthand
         assert (len(sample) == 1), "Multiple VERs of samples are imported! Pick one!"
+        config.Data.outLFNDirBase = '/store/user/kaho/NanoPost_'+era
         config.Data.inputDataset = sample[0]
-        config.General.requestName = "NanoPost_"+sample_shorthand
-        config.Data.outputDatasetTag = 'NanoTestPost_'+sample_shorthand
+        config.General.requestName = sample_shorthand
+        config.Data.outputDatasetTag = sample_shorthand
         config.JobType.scriptArgs = ['isMC=%s'%isMC,'era=%s'%era]
-#        crabCommand('submit', config=config)#, dryrun=True)
+        crabCommand('submit', config=config)#, dryrun=True)

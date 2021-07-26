@@ -50,6 +50,12 @@ class cleaning(Module):
         else:
           return True
 
+    def LepOverlap(self, Leps):
+        if len(Leps)==2:
+          return bool(Leps[0].DeltaR(Leps[1]) < 0.3)
+        else:
+          return True
+
     def analyze(self, event):
         """process event, return True (go to next module) or False (fail, go to next event)"""
         jets = Collection(event, "Jet")
@@ -81,12 +87,13 @@ class cleaning(Module):
         self.out.fillBranch("Electron_Tagged", eTagged)
         self.out.fillBranch("Muon_Tagged", mTagged)
       
-        if len(Leps_em)==2 and not self.tauVeto(Leps_em, Taus):
+        if not self.tauVeto(Leps_em, Taus) and not self.LepOverlap(Leps_em):
           channel = 0
-        elif len(Leps_mm)==2 and not self.tauVeto(Leps_mm, Taus):
+        elif not self.tauVeto(Leps_mm, Taus) and not self.LepOverlap(Leps_mm):
           channel = 1
         else:
           channel = -1
+       
 
         self.out.fillBranch("channel", channel)
 
@@ -99,13 +106,14 @@ class cleaning(Module):
         nbJet20_deepjet_M = 0 
         passDeepJet_M = []
         for j in jets:
-          jp4 = j.p4()
-          jp4.SetPtEtaPhiM(j.pt_nom, jp4.Eta(), jp4.Phi(), jp4.M())
           if channel==-1: 
             passJet30ID.append(0) 
             passDeepJet_L.append(0) 
             passDeepJet_M.append(0) 
             continue
+
+          jp4 = j.p4()
+          jp4.SetPtEtaPhiM(j.pt_nom, jp4.Eta(), jp4.Phi(), jp4.M())
           
           Leps = Leps_em if channel == 0 else Leps_mm
          
