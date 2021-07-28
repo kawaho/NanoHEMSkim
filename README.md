@@ -18,3 +18,8 @@ Then submit jobs
 ```bash
 python crab_cfg.py ../NanoAODUL_2017_data.json 
 ```
+# Local run
+To test locally before submitting to CRAB, uncomment and put your input files to the inputFiles list in ```crab_script.py``` and replae all ```inputFiles()``` to ```inputFiles```. Then do
+```bash
+python crab_script.py --isMC $isMC --era $ERA
+```
