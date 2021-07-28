@@ -30,8 +30,6 @@ class cleaning(Module):
         self.out = wrappedOutputTree
         # 2 should be rejected, 1 is mm, 0 is em
         self.out.branch("channel", "I")
-        self.out.branch("Electron_Tagged", "b", lenVar="nElectron")
-        self.out.branch("Muon_Tagged", "b", lenVar="nMuon")
         self.out.branch("nJet30", "I")
         self.out.branch("Jet_passJet30ID", "b", lenVar="nJet")
 #        self.out.branch("nbJet20_deepcsv_L", "I")
@@ -64,32 +62,28 @@ class cleaning(Module):
         Taus = Collection(event, "Tau")
 
         channel = -1
-        eTagged, mTagged = [], []
         Leps_em = []
         Leps_mm = []
 
-        for e in Electrons:
-          if (e.pt > 24 and abs(e.eta) < 2.5 and e.mvaFall17V2noIso_WP80 and e.convVeto and abs(e.dxy) < 0.045 and abs(e.dz) < 0.2):
-            eTagged.append(1)
-            Leps_em.append(e.p4())
-          else:
-            eTagged.append(0)
+        nE = 0
+        nM = 0
+        nM_hi = 0
 
+        for e in Electrons:
+          if (e.pt > 24 and abs(e.eta) < 2.5 and e.mvaFall17V2noIso_WP80 and e.convVeto and abs(e.dxy) < 0.045 and abs(e.dz) < 0.2 and e.miniPFRelIso_all < 0.1):
+            Leps_em.append(e.p4())
+            nE+=1
         for m in Muons:
-          if (m.pt > 15 and abs(m.eta) < 2.4 and m.tightId and abs(m.dxy) < 0.045 and abs(m.dz) < 0.2):
-            mTagged.append(1)
+          if (m.pt > 15 and abs(m.eta) < 2.4 and m.tightId and abs(m.dxy) < 0.045 and abs(m.dz) < 0.2 and m.pfRelIso04_all < 0.15):
             Leps_mm.append(m.p4())
+            nM+=1
             if (m.pt > 24):
               Leps_em.append(m.p4())
-          else:
-            mTagged.append(0)
+              nM_hi+=1
 
-        self.out.fillBranch("Electron_Tagged", eTagged)
-        self.out.fillBranch("Muon_Tagged", mTagged)
-      
-        if not self.tauVeto(Leps_em, Taus) and not self.LepOverlap(Leps_em):
+        if nE==1 and nM_hi==1 and nM==1 and not self.tauVeto(Leps_em, Taus) and not self.LepOverlap(Leps_em):
           channel = 0
-        elif not self.tauVeto(Leps_mm, Taus) and not self.LepOverlap(Leps_mm):
+        elif nE==0 and nM==2 and not self.tauVeto(Leps_mm, Taus) and not self.LepOverlap(Leps_mm):
           channel = 1
         else:
           channel = -1

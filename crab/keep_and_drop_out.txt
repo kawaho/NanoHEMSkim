@@ -4,7 +4,6 @@ keep channel
 keep TrigObj*
 keep n*Jet*
 keep genZ*
-keep Flag*
 keep Pileup_nTrueInt
 keep Electron*
 keep Muon*

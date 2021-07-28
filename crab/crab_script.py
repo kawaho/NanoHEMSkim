@@ -32,15 +32,15 @@ isMC = args.isMC
 era = args.era
 print "isMC = ",isMC," era = ",era
 
-ElectronVeto = "(Electron_pt > 10 && abs(Electron_eta < 2.5) && Electron_mvaFall17V2noIso_WP90 && Electron_convVeto && abs(Electron_dxy) < 0.045 && abs(Electron_dz) < 0.2 && Electron_miniPFRelIso_all < 0.3)"
+ElectronVeto = "(Electron_pt > 10 && abs(Electron_eta) < 2.5 && Electron_mvaFall17V2noIso_WP90 && Electron_convVeto && abs(Electron_dxy) < 0.045 && abs(Electron_dz) < 0.2 && Electron_miniPFRelIso_all < 0.3)"
 
-ElectronSel = "(Electron_pt > 24 && abs(Electron_eta < 2.5) && Electron_mvaFall17V2noIso_WP80 && Electron_convVeto && abs(Electron_dxy) < 0.045 && abs(Electron_dz) < 0.2)"
+ElectronSel = "(Electron_pt > 24 && abs(Electron_eta) < 2.5 && Electron_mvaFall17V2noIso_WP80 && Electron_convVeto && abs(Electron_dxy) < 0.045 && abs(Electron_dz) < 0.2 && Electron_miniPFRelIso_all < 0.1)"
 
-MuonVeto = "(Muon_pt > 10 && abs(Muon_eta < 2.4) && Muon_mediumId && abs(Muon_dxy) < 0.045 && abs(Muon_dz) < 0.2 && Muon_pfRelIso04_all < 0.3)"
+MuonVeto = "(Muon_pt > 10 && abs(Muon_eta) < 2.4 && Muon_mediumId && abs(Muon_dxy) < 0.045 && abs(Muon_dz) < 0.2 && Muon_pfRelIso04_all < 0.3)"
 
-MuonSel = "(Muon_pt > 24 && abs(Muon_eta < 2.4) && Muon_tightId && abs(Muon_dxy) < 0.045 && abs(Muon_dz) < 0.2)"
+MuonSel = "(Muon_pt > 24 && abs(Muon_eta) < 2.4 && Muon_tightId && abs(Muon_dxy) < 0.045 && abs(Muon_dz) < 0.2 && Muon_pfRelIso04_all < 0.15)"
 
-MuonSel_low = "(Muon_pt > 15 && abs(Muon_eta < 2.4) && Muon_tightId && abs(Muon_dxy) < 0.045 && abs(Muon_dz) < 0.2)"
+MuonSel_low = "(Muon_pt > 15 && abs(Muon_eta) < 2.4 && Muon_tightId && abs(Muon_dxy) < 0.045 && abs(Muon_dz) < 0.2 && Muon_pfRelIso04_all < 0.15)"
 
 selections_emu="(Sum$(%s&&!%s)==0 && Sum$(%s)==1 && Sum$(%s&&!%s)==0 && Sum$(%s)==1)"%(ElectronVeto, ElectronSel, ElectronSel, MuonVeto, MuonSel, MuonSel)
 
@@ -53,7 +53,7 @@ if not '2016' in era:
 
 selections = "("+selections_emu+"||"+selections_mumu+")&&"+METFilters
 
-inputFiles = ["../../../../GG.root"]
+#inputFiles = ["../../../../data2017.root"]
 if era == "2018":
   jmeCorrections_2018UL = createJMECorrector(isMC=True, dataYear="UL2018", jesUncert="Merged", applyHEMfix=True)
   jmeCorrections_2018UL = createJMECorrector(isMC=False, dataYear="UL2018", jesUncert="Merged", applyHEMfix=True)
