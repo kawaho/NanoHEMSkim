@@ -28,7 +28,7 @@ class cleaning(Module):
 
     def beginFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         self.out = wrappedOutputTree
-        # 2 should be rejected, 1 is mm, 0 is em
+        # -1 should be rejected, 1 is mm, 0 is em
         self.out.branch("channel", "I")
         self.out.branch("nJet30", "I")
         self.out.branch("Jet_passJet30ID", "b", lenVar="nJet")
@@ -70,7 +70,7 @@ class cleaning(Module):
         nM_hi = 0
 
         for e in Electrons:
-          if (e.pt > 24 and abs(e.eta) < 2.5 and e.mvaFall17V2noIso_WP80 and e.convVeto and abs(e.dxy) < 0.045 and abs(e.dz) < 0.2 and e.miniPFRelIso_all < 0.1):
+          if (e.pt > 24 and abs(e.eta) < 2.5 and e.mvaFall17V2noIso_WP80 and e.convVeto and abs(e.dxy) < 0.045 and abs(e.dz) < 0.2 and e.pfRelIso03_all < 0.1):
             Leps_em.append(e.p4())
             nE+=1
         for m in Muons:
@@ -88,7 +88,6 @@ class cleaning(Module):
         else:
           channel = -1
        
-
         self.out.fillBranch("channel", channel)
 
         nJet30 = 0 
