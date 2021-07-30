@@ -1,5 +1,6 @@
 # this is a comment
 drop * # start with all
+keep PV_npvsGood
 keep TrigObj*
 keep n*Jet*
 keep Flag*

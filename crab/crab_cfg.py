@@ -20,10 +20,10 @@ config.section_("Data")
 config.Data.inputDataset = '/GluGlu_LFV_HToEMu_M125_TuneCP5_13TeV_PSweights_powheg_pythia8/RunIISummer20UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM'
 #config.Data.inputDBS = 'phys03'
 config.Data.inputDBS = 'global'
-#config.Data.splitting = 'Automatic'
-config.Data.splitting = 'FileBased'
+config.Data.splitting = 'LumiBased'
+#config.Data.splitting = 'FileBased'
 #config.Data.splitting = 'EventAwareLumiBased'
-config.Data.unitsPerJob = 2
+config.Data.unitsPerJob = 250
 #config.Data.totalUnits = 10
 
 config.Data.outLFNDirBase = '/store/user/kaho/NanoPost_' 
@@ -52,6 +52,7 @@ if __name__ == '__main__':
         config.Data.lumiMask = 'Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt'
       elif era=='2018':
         config.Data.lumiMask = 'Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt'
+      config.JobType.inputFiles.append(config.Data.lumiMask)
     for sample_shorthand, sample in samples.iteritems():
         print "Submitting Jobs for "+sample_shorthand
         assert (len(sample) == 1), "Multiple VERs of samples are imported! Pick one!"

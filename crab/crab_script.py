@@ -52,7 +52,7 @@ if not '2016' in era:
   METFilters.replace(")",  "&& Flag_eeBadScFilter)")
 
 #selections = "("+selections_emu+")&&"+METFilters
-selections = "("+selections_emu+"||"+selections_mumu+")&&"+METFilters
+selections = "("+selections_emu+"||"+selections_mumu+")&&"+METFilters+"&&(PV_npvsGood > 0)"
 
 #inputFiles = ["../../../../GG.root"]
 if era == "2018":
