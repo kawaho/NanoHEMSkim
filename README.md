@@ -6,7 +6,7 @@ To produce json files of sample/dataset paths:
 python get_das_info.py 
 ```
 # Submit CRAB jobs
-First set up the env
+First go to the `./crab` directory set up the env
 ```bash
 source setup.sh 
 ```
