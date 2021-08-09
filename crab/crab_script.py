@@ -42,6 +42,7 @@ MuonSel = "(Muon_pt > 24 && abs(Muon_eta) < 2.4 && Muon_tightId && abs(Muon_dxy)
 
 MuonSel_low = "(Muon_pt > 15 && abs(Muon_eta) < 2.4 && Muon_tightId && abs(Muon_dxy) < 0.045 && abs(Muon_dz) < 0.2 && Muon_pfRelIso04_all < 0.15)"
 
+#selections_emu="(Sum$(%s)==1 && Sum$(%s)==1)"%(ElectronSel, MuonSel)
 selections_emu="(Sum$(%s&&!%s)==0 && Sum$(%s)==1 && Sum$(%s&&!%s)==0 && Sum$(%s)==1)"%(ElectronVeto, ElectronSel, ElectronSel, MuonVeto, MuonSel, MuonSel)
 
 selections_mumu="(Sum$(%s)==0 && Sum$(%s&&!%s)==0 && Sum$(%s)==2)"%(ElectronVeto, MuonVeto, MuonSel_low, MuonSel_low)

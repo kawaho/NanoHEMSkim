@@ -20,10 +20,11 @@ config.section_("Data")
 config.Data.inputDataset = '/GluGlu_LFV_HToEMu_M125_TuneCP5_13TeV_PSweights_powheg_pythia8/RunIISummer20UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM'
 #config.Data.inputDBS = 'phys03'
 config.Data.inputDBS = 'global'
-config.Data.splitting = 'LumiBased'
-#config.Data.splitting = 'FileBased'
+#config.Data.splitting = 'LumiBased'
+#config.Data.unitsPerJob = 250
+config.Data.splitting = 'FileBased'
+config.Data.unitsPerJob = 2
 #config.Data.splitting = 'EventAwareLumiBased'
-config.Data.unitsPerJob = 250
 #config.Data.totalUnits = 10
 
 config.Data.outLFNDirBase = '/store/user/kaho/NanoPost_' 
@@ -46,6 +47,8 @@ if __name__ == '__main__':
     print 'isMC=%s'%isMC,'era=%s'%era
     from CRABAPI.RawCommand import crabCommand
     if not isMC:
+      config.Data.splitting = 'LumiBased'
+      config.Data.unitsPerJob = 250
       if '2016' in era:
         config.Data.lumiMask = 'Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt'
       elif era=='2017':
@@ -58,7 +61,7 @@ if __name__ == '__main__':
         assert (len(sample) == 1), "Multiple VERs of samples are imported! Pick one!"
         config.Data.outLFNDirBase = '/store/user/kaho/NanoPost_'+era
         config.Data.inputDataset = sample[0]
-        config.General.requestName = sample_shorthand
+        config.General.requestName = sample_shorthand+'_'+era
         config.Data.outputDatasetTag = sample_shorthand
         config.JobType.scriptArgs = ['isMC=%s'%isMC,'era=%s'%era]
         crabCommand('submit', config=config)#, dryrun=True)
