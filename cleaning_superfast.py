@@ -4,8 +4,9 @@ import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 
 class cleaning(Module):
-    def __init__(self, era="2018"):
+    def __init__(self, era="2018", runJEC=True):
         self.era = era
+        self.runJEC = runJEC
         #https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation
         #using 2017 for 2016 at the moment 
         self.btag_WP = {
@@ -88,21 +89,22 @@ class cleaning(Module):
           Leps = Leps_em if channel == 0 else Leps_mm
           for j in jets:
             jp4 = j.p4()
+            jpt = j.pt_nom if self.runJEC else j.pt
 
-            if ((j.jetId>>1)&1 and abs(j.eta)<4.7 and ((j.puId>>2)&1 or j.pt_nom > 50) and jp4.DeltaR(Leps[0]) > 0.4 and jp4.DeltaR(Leps[1]) > 0.4):
+            if ((j.jetId>>1)&1 and abs(j.eta)<4.7 and ((j.puId>>2)&1 or jpt > 50) and jp4.DeltaR(Leps[0]) > 0.4 and jp4.DeltaR(Leps[1]) > 0.4):
            
-              if j.pt_nom > 30:
+              if jpt > 30:
                 passJet30ID.append(1) 
               else:
                 passJet30ID.append(0) 
 
-              if j.pt_nom > 20 and abs(j.eta)<2.5:
-                if j.btagDeepFlavB > self.btag_WP['deepjet']["L"][self.era]:
+              if jpt > 20 and abs(j.eta)<2.5:
+                if j.btagDeepFlavB > self.btag_WP['deepjet']["M"][self.era]:
                   passDeepJet_L.append(1) 
                   passDeepJet_M.append(1) 
-                elif j.btagDeepFlavB > self.btag_WP['deepjet']["M"][self.era]:
-                  passDeepJet_L.append(0) 
-                  passDeepJet_M.append(1) 
+                elif j.btagDeepFlavB > self.btag_WP['deepjet']["L"][self.era]:
+                  passDeepJet_L.append(1) 
+                  passDeepJet_M.append(0) 
                 else:
                   passDeepJet_L.append(0) 
                   passDeepJet_M.append(0) 
@@ -124,5 +126,5 @@ class cleaning(Module):
 
 cleaning_2016preVFPUL = lambda: cleaning("2016UL")
 cleaning_2016postVFPUL = lambda: cleaning("2016UL")
-cleaning_2017UL = lambda: cleaning("2017UL")
+cleaning_2017UL = lambda: cleaning(era="2017UL")
 cleaning_2018UL = lambda: cleaning("2018UL")

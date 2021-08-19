@@ -19,7 +19,7 @@ from PhysicsTools.NanoAODTools.postprocessing.modules.jme.jetmetHelperRun2 impor
 from PhysicsTools.NanoAODTools.postprocessing.modules.btv.btagSFProducer import *
 #from PhysicsTools.NanoAODTools.postprocessing.modules.btv.btagSFProducerV2 import *
 
-from PhysicsTools.NanoAODTools.postprocessing.NanoHEMSkim.cleaning import *
+from PhysicsTools.NanoAODTools.postprocessing.NanoHEMSkim.cleaning_superfast import *
 from PhysicsTools.NanoAODTools.postprocessing.NanoHEMSkim.Zpt_reweight import *
 
 parser = argparse.ArgumentParser("")
@@ -34,7 +34,7 @@ print "isMC = ",isMC," era = ",era
 
 ElectronVeto = "(Electron_pt > 10 && abs(Electron_eta) < 2.5 && Electron_mvaFall17V2noIso_WP90 && Electron_convVeto && abs(Electron_dxy) < 0.045 && abs(Electron_dz) < 0.2 && Electron_pfRelIso03_all < 0.3)"
 
-ElectronSel = "(Electron_pt > 24 && abs(Electron_eta) < 2.5 && Electron_mvaFall17V2noIso_WP80 && Electron_convVeto && abs(Electron_dxy) < 0.045 && abs(Electron_dz) < 0.2 && Electron_pfRelIso03_all < 0.1)"
+ElectronSel = "(Electron_pt > 24 && abs(Electron_eta) < 2.5 && Electron_mvaFall17V2noIso_WP80 && Electron_convVeto && abs(Electron_dxy) < 0.045 && abs(Electron_dz) < 0.2 && Electron_pfRelIso03_all < 0.1 && Electron_lostHits<2)"
 
 MuonVeto = "(Muon_pt > 10 && abs(Muon_eta) < 2.4 && Muon_mediumId && abs(Muon_dxy) < 0.045 && abs(Muon_dz) < 0.2 && Muon_pfRelIso04_all < 0.3)"
 
@@ -42,20 +42,19 @@ MuonSel = "(Muon_pt > 24 && abs(Muon_eta) < 2.4 && Muon_tightId && abs(Muon_dxy)
 
 MuonSel_low = "(Muon_pt > 15 && abs(Muon_eta) < 2.4 && Muon_tightId && abs(Muon_dxy) < 0.045 && abs(Muon_dz) < 0.2 && Muon_pfRelIso04_all < 0.15)"
 
-#selections_emu="(Sum$(%s)==1 && Sum$(%s)==1)"%(ElectronSel, MuonSel)
 selections_emu="(Sum$(%s&&!%s)==0 && Sum$(%s)==1 && Sum$(%s&&!%s)==0 && Sum$(%s)==1)"%(ElectronVeto, ElectronSel, ElectronSel, MuonVeto, MuonSel, MuonSel)
 
 selections_mumu="(Sum$(%s)==0 && Sum$(%s&&!%s)==0 && Sum$(%s)==2)"%(ElectronVeto, MuonVeto, MuonSel_low, MuonSel_low)
 
-METFilters = "(Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_eeBadScFilter && Flag_ecalBadCalibFilter)" # && Flag_BadPFMuonDzFilter 
+METFilters = "(Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_eeBadScFilter && Flag_eeBadScFilter)" # && Flag_BadPFMuonDzFilter 
 
 if not '2016' in era:
-  METFilters.replace(")",  "&& Flag_eeBadScFilter)")
+  METFilters.replace(")",  "&& Flag_ecalBadCalibFilter)")
 
 #selections = "("+selections_emu+")&&"+METFilters
 selections = "("+selections_emu+"||"+selections_mumu+")&&"+METFilters+"&&(PV_npvsGood > 0)"
 
-#inputFiles = ["../../../../GG.root"]
+#inputFiles = ["../../../../TT.root"]
 if era == "2018":
   jmeCorrections_2018UL = createJMECorrector(isMC=True, dataYear="UL2018", jesUncert="Merged", applyHEMfix=True)
   jmeCorrections_2018UL = createJMECorrector(isMC=False, dataYear="UL2018", jesUncert="Merged", applyHEMfix=True)
@@ -88,7 +87,7 @@ elif era == "2017":
                   selections,
                   branchsel="keep_and_drop_in.txt",
                   outputbranchsel="keep_and_drop_out.txt",
-                  modules=[jmeCorrections_2017UL(), cleaning_2017UL(), PrefCorr_2017UL(), MuonSFTrig_2017UL(), MuonSFID_2017UL(), MuonSFISO_2017UL(), ElectronSFReco_2017UL(), ElectronSFID_2017UL(), cleaning_2017UL(), btagSF_jet_2017UL(), puWeight_UL2017(), Zpt_reweightUL(), muonScaleRes2017UL()],
+                  modules=[jmeCorrections_2017UL(), cleaning_2017UL(), PrefCorr_2017UL(), MuonSFTrig_2017UL(), MuonSFID_2017UL(), MuonSFISO_2017UL(), ElectronSFReco_2017UL(), ElectronSFID_2017UL(), btagSF_jet_2017UL(), puWeight_UL2017(), muonScaleRes2017UL()],# Zpt_reweightUL()],
                   provenance=True,
                   fwkJobReport=True,
                   jsonInput=runsAndLumis())

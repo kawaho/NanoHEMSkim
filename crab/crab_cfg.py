@@ -23,7 +23,7 @@ config.Data.inputDBS = 'global'
 #config.Data.splitting = 'LumiBased'
 #config.Data.unitsPerJob = 250
 config.Data.splitting = 'FileBased'
-config.Data.unitsPerJob = 2
+config.Data.unitsPerJob = 1
 #config.Data.splitting = 'EventAwareLumiBased'
 #config.Data.totalUnits = 10
 
@@ -61,7 +61,7 @@ if __name__ == '__main__':
         assert (len(sample) == 1), "Multiple VERs of samples are imported! Pick one!"
         config.Data.outLFNDirBase = '/store/user/kaho/NanoPost_'+era
         config.Data.inputDataset = sample[0]
-        config.General.requestName = sample_shorthand+'_'+era
+        config.General.requestName = sample_shorthand+'_'+era+'_fast'
         config.Data.outputDatasetTag = sample_shorthand
         config.JobType.scriptArgs = ['isMC=%s'%isMC,'era=%s'%era]
         crabCommand('submit', config=config)#, dryrun=True)

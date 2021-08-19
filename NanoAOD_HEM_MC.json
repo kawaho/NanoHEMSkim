@@ -24,7 +24,7 @@
   "ST_tW_antitop" : "ST_tW_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8",
   "ST_tW_top" : "ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8",
   "ST_t_top" : "ST_t-channel_top_5f_InclusiveDecays_TuneCP5_13TeV-powheg-pythia8",
-  "ST_t_antitop" : "ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8",
+  "ST_t_antitop" : "ST_t-channel_antitop_5f_InclusiveDecays_TuneCP5_13TeV-powheg-pythia8",
   "WGToLNuG" : "WGToLNuG_TuneCP5_13TeV-madgraphMLM-pythia8",
   "EWKZLL" : "EWKZ2Jets_ZToLL_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8",
   "EWKWminus" : "EWKWMinus2Jets_WToLNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8",
