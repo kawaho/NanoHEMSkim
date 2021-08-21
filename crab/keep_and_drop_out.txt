@@ -10,6 +10,7 @@ keep Muon*
 keep Jet*
 keep MET*
 keep HLT*_IsoMu*
+keep HLT*_IsoTkMu*
 keep HLT*_Mu*_Ele*
 keep *Weight*
 keep GenPart*

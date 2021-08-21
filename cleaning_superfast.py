@@ -35,6 +35,8 @@ class cleaning(Module):
         self.out.branch("Jet_passJet30ID", "b", lenVar="nJet")
         self.out.branch("Jet_passDeepJet_L", "b", lenVar="nJet")
         self.out.branch("Jet_passDeepJet_M", "b", lenVar="nJet")
+        self.out.branch("Jet_passDeepCSV_L", "b", lenVar="nJet")
+        self.out.branch("Jet_passDeepCSV_M", "b", lenVar="nJet")
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         pass
@@ -85,6 +87,9 @@ class cleaning(Module):
         passJet30ID = []
         passDeepJet_L = []
         passDeepJet_M = []
+        passDeepCSV_L = []
+        passDeepCSV_M = []
+
         if channel!=-1:
           Leps = Leps_em if channel == 0 else Leps_mm
           for j in jets:
@@ -108,17 +113,34 @@ class cleaning(Module):
                 else:
                   passDeepJet_L.append(0) 
                   passDeepJet_M.append(0) 
+
+                if j.btagDeepB > self.btag_WP['deepcsv']["M"][self.era]:
+                  passDeepCSV_L.append(1) 
+                  passDeepCSV_M.append(1) 
+                elif j.btagDeepB > self.btag_WP['deepcsv']["L"][self.era]:
+                  passDeepCSV_L.append(1) 
+                  passDeepCSV_M.append(0) 
+                else:
+                  passDeepCSV_L.append(0) 
+                  passDeepCSV_M.append(0) 
               else:
                 passDeepJet_L.append(0) 
                 passDeepJet_M.append(0) 
+                passDeepCSV_L.append(0) 
+                passDeepCSV_M.append(0) 
             else:
               passJet30ID.append(0) 
               passDeepJet_L.append(0) 
               passDeepJet_M.append(0) 
+              passDeepCSV_L.append(0) 
+              passDeepCSV_M.append(0) 
+
           self.out.fillBranch("nJet30", sum(passJet30ID))
           self.out.fillBranch("Jet_passJet30ID", passJet30ID)
           self.out.fillBranch("Jet_passDeepJet_L", passDeepJet_L)
           self.out.fillBranch("Jet_passDeepJet_M", passDeepJet_M)
+          self.out.fillBranch("Jet_passDeepCSV_L", passDeepCSV_L)
+          self.out.fillBranch("Jet_passDeepCSV_M", passDeepCSV_M)
         return True
 
 

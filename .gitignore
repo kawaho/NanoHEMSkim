@@ -1,5 +1,6 @@
 *__init__*
 *.pyc
+*.swp
 *.root
 *.xml
 *.log
