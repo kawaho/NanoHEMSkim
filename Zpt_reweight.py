@@ -22,12 +22,13 @@ class Zpt_reweight(Module):
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         pass
 
+    #From https://github.com/KIT-CMS/KITHiggsToTauTau/blob/reduced_trigger_objects/src/Producers/ZPtReweightProducer.cc#L66
     def analyze(self, event):
         """process event, return True (go to next module) or False (fail, go to next event)"""
         genPart = Collection(event, "GenPart")
         genZ_p4 = ROOT.TLorentzVector()
         for gen in genPart:
-          if (abs(gen.pdgId) >=11 and abs(gen.pdgId) <=16 and (gen.statusFlags>>8)&1 and gen.status==1) or (gen.statusFlags>>9)&1:
+          if (abs(gen.pdgId) >=11 and abs(gen.pdgId) <=16 and (gen.statusFlags>>8)&1 and gen.status==1) or (gen.statusFlags>>10)&1:
             genZ_p4 += gen.p4()
 
         self.out.fillBranch("genZ_pt", genZ_p4.Pt())
