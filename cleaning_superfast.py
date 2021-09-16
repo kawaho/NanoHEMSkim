@@ -13,10 +13,12 @@ class cleaning(Module):
           'deepcsv': {
              "L": {'2016UL': 0.1355, '2017UL': 0.1355, '2018UL': 0.1208},
              "M": {'2016UL': 0.4506, '2017UL': 0.4506, '2018UL': 0.4168},
+             "T": {'2016UL': 0.4506, '2017UL': 0.7738, '2018UL': 0.7665},
           },
           'deepjet': {
              "L": {'2016UL': 0.0532, '2017UL': 0.0532, '2018UL': 0.0490},
              "M": {'2016UL': 0.3040, '2017UL': 0.3040, '2018UL': 0.2783},
+             "T": {'2016UL': 0.3040, '2017UL': 0.7476, '2018UL': 0.7100},
           }
         } 
         pass
@@ -35,8 +37,9 @@ class cleaning(Module):
         self.out.branch("Jet_passJet30ID", "b", lenVar="nJet")
         self.out.branch("Jet_passDeepJet_L", "b", lenVar="nJet")
         self.out.branch("Jet_passDeepJet_M", "b", lenVar="nJet")
-        self.out.branch("Jet_passDeepCSV_L", "b", lenVar="nJet")
-        self.out.branch("Jet_passDeepCSV_M", "b", lenVar="nJet")
+        self.out.branch("Jet_passDeepJet_T", "b", lenVar="nJet")
+#        self.out.branch("Jet_passDeepCSV_L", "b", lenVar="nJet")
+#        self.out.branch("Jet_passDeepCSV_M", "b", lenVar="nJet")
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         pass
@@ -87,8 +90,9 @@ class cleaning(Module):
         passJet30ID = []
         passDeepJet_L = []
         passDeepJet_M = []
-        passDeepCSV_L = []
-        passDeepCSV_M = []
+        passDeepJet_T = []
+#        passDeepCSV_L = []
+#        passDeepCSV_M = []
 
         if channel!=-1:
           Leps = Leps_em if channel == 0 else Leps_mm
@@ -104,43 +108,53 @@ class cleaning(Module):
                 passJet30ID.append(0) 
 
               if jpt > 20 and abs(j.eta)<2.5:
-                if j.btagDeepFlavB > self.btag_WP['deepjet']["M"][self.era]:
+                if j.btagDeepFlavB > self.btag_WP['deepjet']["T"][self.era]:
                   passDeepJet_L.append(1) 
                   passDeepJet_M.append(1) 
+                  passDeepJet_T.append(1) 
+                elif j.btagDeepFlavB > self.btag_WP['deepjet']["M"][self.era]:
+                  passDeepJet_L.append(1) 
+                  passDeepJet_M.append(1) 
+                  passDeepJet_T.append(0) 
                 elif j.btagDeepFlavB > self.btag_WP['deepjet']["L"][self.era]:
                   passDeepJet_L.append(1) 
                   passDeepJet_M.append(0) 
+                  passDeepJet_T.append(0) 
                 else:
                   passDeepJet_L.append(0) 
                   passDeepJet_M.append(0) 
+                  passDeepJet_T.append(0) 
 
-                if j.btagDeepB > self.btag_WP['deepcsv']["M"][self.era]:
-                  passDeepCSV_L.append(1) 
-                  passDeepCSV_M.append(1) 
-                elif j.btagDeepB > self.btag_WP['deepcsv']["L"][self.era]:
-                  passDeepCSV_L.append(1) 
-                  passDeepCSV_M.append(0) 
-                else:
-                  passDeepCSV_L.append(0) 
-                  passDeepCSV_M.append(0) 
+                #if j.btagDeepB > self.btag_WP['deepcsv']["M"][self.era]:
+                #  passDeepCSV_L.append(1) 
+                #  passDeepCSV_M.append(1) 
+                #elif j.btagDeepB > self.btag_WP['deepcsv']["L"][self.era]:
+                #  passDeepCSV_L.append(1) 
+                #  passDeepCSV_M.append(0) 
+                #else:
+                #  passDeepCSV_L.append(0) 
+                #  passDeepCSV_M.append(0) 
               else:
                 passDeepJet_L.append(0) 
                 passDeepJet_M.append(0) 
-                passDeepCSV_L.append(0) 
-                passDeepCSV_M.append(0) 
+                passDeepJet_T.append(0) 
+                #passDeepCSV_L.append(0) 
+                #passDeepCSV_M.append(0) 
             else:
               passJet30ID.append(0) 
               passDeepJet_L.append(0) 
               passDeepJet_M.append(0) 
-              passDeepCSV_L.append(0) 
-              passDeepCSV_M.append(0) 
+              passDeepJet_T.append(0) 
+              #passDeepCSV_L.append(0) 
+              #passDeepCSV_M.append(0) 
 
           self.out.fillBranch("nJet30", sum(passJet30ID))
           self.out.fillBranch("Jet_passJet30ID", passJet30ID)
           self.out.fillBranch("Jet_passDeepJet_L", passDeepJet_L)
           self.out.fillBranch("Jet_passDeepJet_M", passDeepJet_M)
-          self.out.fillBranch("Jet_passDeepCSV_L", passDeepCSV_L)
-          self.out.fillBranch("Jet_passDeepCSV_M", passDeepCSV_M)
+          self.out.fillBranch("Jet_passDeepJet_T", passDeepJet_T)
+#          self.out.fillBranch("Jet_passDeepCSV_L", passDeepCSV_L)
+#          self.out.fillBranch("Jet_passDeepCSV_M", passDeepCSV_M)
         return True
 
 

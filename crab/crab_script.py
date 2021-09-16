@@ -57,14 +57,14 @@ selections = "("+selections_emu+"||"+selections_mumu+")&&"+METFilters+"&&(PV_npv
 #inputFiles = ["../../../../GG.root"]
 if era == "2018":
   jmeCorrections_2018UL = createJMECorrector(isMC=True, dataYear="UL2018", jesUncert="Merged", applyHEMfix=True)
-  jmeCorrections_2018UL = createJMECorrector(isMC=False, dataYear="UL2018", jesUncert="Merged", applyHEMfix=True)
+  jmeCorrections_2018UL_data = createJMECorrector(isMC=False, dataYear="UL2018", jesUncert="Merged")
   if isMC:
     p = PostProcessor(".",
-                  inputFiles,
+                  inputFiles(),
                   selections,
                   branchsel="keep_and_drop_in.txt",
                   outputbranchsel="keep_and_drop_out.txt",
-                  modules=[jmeCorrections_2018UL(), cleaning_2018UL()],#, MuonSFTrig_2018UL(), MuonSFID_2018UL(), MuonSFISO_2018UL(), ElectronSFReco_2018UL(), ElectronSFID_2018UL(), cleaning_2018UL(), btagSF_jet_2018UL(), puWeight_UL2018(), Zpt_reweightUL(), muonScaleRes2018UL()],
+                  modules=[jmeCorrections_2018UL(), cleaning_2018UL(), MuonSFTrig_2018UL(), MuonSFID_2018UL(), MuonSFISO_2018UL(), ElectronSFReco_2018UL(), ElectronSFID_2018UL(), btagSF_jet_2018UL(), puWeight_UL2018(), Zpt_reweightUL(), muonScaleRes2018UL()],
                   provenance=True,
                   fwkJobReport=True,
                   jsonInput=runsAndLumis())
@@ -87,7 +87,7 @@ elif era == "2017":
                   selections,
                   branchsel="keep_and_drop_in.txt",
                   outputbranchsel="keep_and_drop_out.txt",
-                  modules=[jmeCorrections_2017UL(), cleaning_2017UL(), PrefCorr_2017UL(), MuonSFTrig_2017UL(), MuonSFID_2017UL(), MuonSFISO_2017UL(), ElectronSFReco_2017UL(), ElectronSFID_2017UL(), btagSF_jet_2017UL(), btagSF_csv_2017UL(), puWeight_UL2017(), muonScaleRes2017UL(), Zpt_reweightUL()],
+                  modules=[jmeCorrections_2017UL(), cleaning_2017UL(), PrefCorr_2017UL(), MuonSFTrig_2017UL(), MuonSFID_2017UL(), MuonSFISO_2017UL(), ElectronSFReco_2017UL(), ElectronSFID_2017UL(), btagSF_jet_2017UL(), puWeight_UL2017(), muonScaleRes2017UL(), Zpt_reweightUL()], #btagSF_csv_2017UL()
                   provenance=True,
                   fwkJobReport=True,
                   jsonInput=runsAndLumis())
