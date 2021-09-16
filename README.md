@@ -18,6 +18,12 @@ Then submit jobs
 ```bash
 python crab_cfg.py ../NanoAODUL_2017_data.json 
 ```
+# Resubmit CRAB jobs
+To resubmit failed CRAB jobs, do
+```bash
+python resubmit.py -f
+```
+which also creates a json file named ```finishedJobs.json``` that contains a list of the finished jobs. The option ```-f``` creates a new ```finishedJobs.json``` for a new patch of CRAB jobs. Omit ```-f``` if ```finishedJobs.json``` was already created for the patch of jobs.
 # Local run
 To test locally before submitting to CRAB, uncomment and put your input files to the inputFiles list in ```crab_script.py``` and replae all ```inputFiles()``` to ```inputFiles```. Then do
 ```bash
