@@ -51,7 +51,6 @@ METFilters = "(Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_
 if not '2016' in era:
   METFilters.replace(")",  "&& Flag_ecalBadCalibFilter)")
 
-#selections = "("+selections_emu+")&&"+METFilters
 selections = "("+selections_emu+"||"+selections_mumu+")&&"+METFilters+"&&(PV_npvsGood > 0)"
 
 #inputFiles = ["../../../../GG.root"]

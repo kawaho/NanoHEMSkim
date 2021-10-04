@@ -33,7 +33,8 @@ config.Data.outLFNDirBase = '/store/user/kaho/NanoPost_'
 config.Data.publication = False
 config.Data.outputDatasetTag = 'NanoTestPost'
 config.section_("Site")
-config.Site.storageSite = "T3_US_NotreDame"
+config.Site.storageSite = "T2_US_Wisconsin"
+#config.Site.storageSite = "T3_US_NotreDame"
 
 #config.Site.storageSite = "T2_CH_CERN"
 # config.section_("User")
@@ -59,7 +60,7 @@ if __name__ == '__main__':
     for sample_shorthand, sample in samples.iteritems():
         print "Submitting Jobs for "+sample_shorthand
         assert (len(sample) == 1), "Multiple VERs of samples are imported! Pick one!"
-        config.Data.outLFNDirBase = '/store/user/kaho/NanoPost_'+era+'_v1p3'
+        config.Data.outLFNDirBase = '/store/user/kaho/NanoPost_'+era+'_v1p4'
         config.Data.inputDataset = sample[0]
         config.General.requestName = sample_shorthand+'_'+era
         config.Data.outputDatasetTag = sample_shorthand

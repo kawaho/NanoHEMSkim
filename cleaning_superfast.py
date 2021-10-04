@@ -100,14 +100,11 @@ class cleaning(Module):
             jp4 = j.p4()
             jpt = j.pt_nom if self.runJEC else j.pt
 
-            if ((j.jetId>>1)&1 and abs(j.eta)<4.7 and ((j.puId>>2)&1 or jpt > 50) and jp4.DeltaR(Leps[0]) > 0.4 and jp4.DeltaR(Leps[1]) > 0.4):
+            if ((j.jetId>>1)&1 and abs(j.eta)<4.7 and ((j.puId>>2)&1 or jpt > 50) and jp4.DeltaR(Leps[0]) > 0.4 and jp4.DeltaR(Leps[1]) > 0.4) and (jpt > 30):
            
-              if jpt > 30:
-                passJet30ID.append(1) 
-              else:
-                passJet30ID.append(0) 
+              passJet30ID.append(1) 
 
-              if jpt > 20 and abs(j.eta)<2.5:
+              if abs(j.eta)<2.5:
                 if j.btagDeepFlavB > self.btag_WP['deepjet']["T"][self.era]:
                   passDeepJet_L.append(1) 
                   passDeepJet_M.append(1) 
