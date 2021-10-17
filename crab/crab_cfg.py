@@ -60,9 +60,14 @@ if __name__ == '__main__':
     for sample_shorthand, sample in samples.iteritems():
         print "Submitting Jobs for "+sample_shorthand
         assert (len(sample) == 1), "Multiple VERs of samples are imported! Pick one!"
-        config.Data.outLFNDirBase = '/store/user/kaho/NanoPost_'+era+'_v1p4'
+        config.Data.outLFNDirBase = '/store/user/kaho/NanoPost_'+era+'_v2'
         config.Data.inputDataset = sample[0]
         config.General.requestName = sample_shorthand+'_'+era
         config.Data.outputDatasetTag = sample_shorthand
-        config.JobType.scriptArgs = ['isMC=%s'%isMC,'era=%s'%era]
+        if not isMC: 
+          subera = str(sample_shorthand.split('-')[0][-1])
+          print "Run period is ", subera
+          config.JobType.scriptArgs = ['isMC=%s'%isMC,'era=%s'%era,'subera=%s'%subera]
+        else:
+          config.JobType.scriptArgs = ['isMC=%s'%isMC,'era=%s'%era]
         crabCommand('submit', config=config)#, dryrun=True)
