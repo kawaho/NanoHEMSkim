@@ -62,9 +62,8 @@ selections = "("+selections_emu_iso+"||"+selections_emu_noiso+"||"+selections_mu
 
 #inputFiles = ["../../../../GG.root"]
 if era == "2018":
-  jmeCorrections_2018UL = createJMECorrector(isMC=True, dataYear="UL2018", jesUncert="Merged", applyHEMfix=True)
-  jmeCorrections_2018UL_data = createJMECorrector(isMC=False, dataYear="UL2018", runPeriod=subera, jesUncert="Merged")
   if isMC:
+    jmeCorrections_2018UL = createJMECorrector(isMC=True, dataYear="UL2018", jesUncert="Merged", applyHEMfix=True)
     p = PostProcessor(".",
                   inputFiles(),
                   selections,
@@ -75,6 +74,7 @@ if era == "2018":
                   fwkJobReport=True,
                   jsonInput=runsAndLumis())
   else:
+    jmeCorrections_2018UL_data = createJMECorrector(isMC=False, dataYear="UL2018", runPeriod=subera, jesUncert="Merged")
     p = PostProcessor(".",
                   inputFiles(),
                   selections,
@@ -85,9 +85,8 @@ if era == "2018":
                   fwkJobReport=True,
                   jsonInput=runsAndLumis())
 elif era == "2017":
-  jmeCorrections_2017UL = createJMECorrector(isMC=True, dataYear="UL2017", jesUncert="Merged")
-  jmeCorrections_2017UL_data = createJMECorrector(isMC=False, dataYear="UL2017", jesUncert="Merged", runPeriod=subera)
   if isMC:
+    jmeCorrections_2017UL = createJMECorrector(isMC=True, dataYear="UL2017", jesUncert="Merged")
     p = PostProcessor(".",
                   inputFiles(),
                   selections,
@@ -98,6 +97,7 @@ elif era == "2017":
                   fwkJobReport=True,
                   jsonInput=runsAndLumis())
   else:
+    jmeCorrections_2017UL_data = createJMECorrector(isMC=False, dataYear="UL2017", jesUncert="Merged", runPeriod=subera)
     p = PostProcessor(".",
                   inputFiles(),
                   selections,
@@ -109,9 +109,8 @@ elif era == "2017":
                   jsonInput=runsAndLumis())
 
 elif era == "2016postVFP":
-  jmeCorrections_2016postVFPUL = createJMECorrector(isMC=True, dataYear="UL2016", jesUncert="Merged", runPeriod='F')
-  jmeCorrections_2016postVFPUL_data = createJMECorrector(isMC=False, dataYear="UL2016", jesUncert="Merged", runPeriod=subera)
   if isMC:
+    jmeCorrections_2016postVFPUL = createJMECorrector(isMC=True, dataYear="UL2016", jesUncert="Merged", runPeriod='F')
     p = PostProcessor(".",
                   inputFiles(),
                   selections,
@@ -122,6 +121,7 @@ elif era == "2016postVFP":
                   fwkJobReport=True,
                   jsonInput=runsAndLumis())
   else:
+    jmeCorrections_2016postVFPUL_data = createJMECorrector(isMC=False, dataYear="UL2016", jesUncert="Merged", runPeriod=subera)
     p = PostProcessor(".",
                   inputFiles(),
                   selections,
@@ -133,9 +133,8 @@ elif era == "2016postVFP":
                   jsonInput=runsAndLumis())
 
 elif era == "2016preVFP":
-  jmieCorrections_2016preVFPUL = createJMECorrector(isMC=True, dataYear="UL2016_preVFP", jesUncert="Merged")
-  jmieCorrections_2016preVFPUL_data = createJMECorrector(isMC=False, dataYear="UL2016_preVFP", jesUncert="Merged", runPeriod=subera)
   if isMC:
+    jmeCorrections_2016preVFPUL = createJMECorrector(isMC=True, dataYear="UL2016_preVFP", jesUncert="Merged")
     p = PostProcessor(".",
                   inputFiles(),
                   selections,
@@ -146,6 +145,7 @@ elif era == "2016preVFP":
                   fwkJobReport=True,
                   jsonInput=runsAndLumis())
   else:
+    jmeCorrections_2016preVFPUL_data = createJMECorrector(isMC=False, dataYear="UL2016_preVFP", jesUncert="Merged", runPeriod=subera)
     p = PostProcessor(".",
                   inputFiles(),
                   selections,
