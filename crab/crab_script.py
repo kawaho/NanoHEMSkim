@@ -36,15 +36,15 @@ print "isMC = ",isMC," era = ",era," subera = ",subera
 
 ElectronVeto_noiso = "(Electron_pt > 20 && abs(Electron_eta) < 2.5 && Electron_mvaFall17V2noIso_WP90 && Electron_convVeto && abs(Electron_dxy) < 0.05 && abs(Electron_dz) < 0.2 && Electron_pfRelIso03_all < 0.2)"
 
-ElectronSel_noiso = "(Electron_pt > 24 && abs(Electron_eta) < 2.5 && Electron_mvaFall17V2noIso_WP80 && Electron_convVeto && abs(Electron_dxy) < 0.05 && abs(Electron_dz) < 0.2 && Electron_pfRelIso03_all < 0.1 && Electron_lostHits<2)"
+ElectronSel_noiso = "(Electron_pt > 20 && abs(Electron_eta) < 2.5 && Electron_mvaFall17V2noIso_WP80 && Electron_convVeto && abs(Electron_dxy) < 0.05 && abs(Electron_dz) < 0.2 && Electron_pfRelIso03_all < 0.1 && Electron_lostHits<2)"
 
 ElectronVeto_iso = "(Electron_pt > 20 && abs(Electron_eta) < 2.5 && Electron_mvaFall17V2Iso_WP90 && Electron_convVeto && abs(Electron_dxy) < 0.05 && abs(Electron_dz) < 0.2)"
 
-ElectronSel_iso = "(Electron_pt > 24 && abs(Electron_eta) < 2.5 && Electron_mvaFall17V2Iso_WP80 && Electron_convVeto && abs(Electron_dxy) < 0.05 && abs(Electron_dz) < 0.2 && Electron_lostHits<2)"
+ElectronSel_iso = "(Electron_pt > 20 && abs(Electron_eta) < 2.5 && Electron_mvaFall17V2Iso_WP80 && Electron_convVeto && abs(Electron_dxy) < 0.05 && abs(Electron_dz) < 0.2 && Electron_lostHits<2)"
 
 MuonVeto = "(Muon_pt > 15 && abs(Muon_eta) < 2.4 && Muon_mediumId && abs(Muon_dxy) < 0.05 && abs(Muon_dz) < 0.2 && Muon_pfRelIso04_all < 0.25)"
 
-MuonSel = "(Muon_pt > 24 && abs(Muon_eta) < 2.4 && Muon_tightId && abs(Muon_dxy) < 0.05 && abs(Muon_dz) < 0.2 && Muon_pfRelIso04_all < 0.15)"
+MuonSel = "(Muon_pt > 15 && abs(Muon_eta) < 2.4 && Muon_tightId && abs(Muon_dxy) < 0.05 && abs(Muon_dz) < 0.2 && Muon_pfRelIso04_all < 0.15)"
 
 MuonSel_low = "(Muon_pt > 15 && abs(Muon_eta) < 2.4 && Muon_tightId && abs(Muon_dxy) < 0.05 && abs(Muon_dz) < 0.2 && Muon_pfRelIso04_all < 0.15)"
 
@@ -53,13 +53,14 @@ selections_emu_noiso="(Sum$(%s&&!%s)==0 && Sum$(%s)==1 && Sum$(%s&&!%s)==0 && Su
 
 selections_mumu="(Sum$(%s)==0 && Sum$(%s&&!%s)==0 && Sum$(%s)==2)"%(ElectronVeto_iso, MuonVeto, MuonSel_low, MuonSel_low)
 
-METFilters = "(Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_eeBadScFilter && Flag_eeBadScFilter)" # && Flag_BadPFMuonDzFilter 
+METFilters = "(Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_eeBadScFilter && Flag_eeBadScFilter && Flag_BadPFMuonDzFilter)"
 
 if not '2016' in era:
   METFilters.replace(")",  "&& Flag_ecalBadCalibFilter)")
 
 selections = "("+selections_emu_iso+"||"+selections_emu_noiso+"||"+selections_mumu+")&&"+METFilters+"&&(PV_npvsGood > 0)"
 
+#inputFiles = ["../../../../gg18_v9.root"]
 #inputFiles = ["../../../../GG.root"]
 if era == "2018":
   if isMC:

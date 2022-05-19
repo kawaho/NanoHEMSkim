@@ -60,7 +60,7 @@ if __name__ == '__main__':
     for sample_shorthand, sample in samples.iteritems():
         print "Submitting Jobs for "+sample_shorthand
         assert (len(sample) == 1), "Multiple VERs of samples are imported! Pick one!"
-        config.Data.outLFNDirBase = '/store/user/kaho/NanoPost_'+era+'_v2p1'
+        config.Data.outLFNDirBase = '/store/user/kaho/NanoPost_'+era+'_v9'
         config.Data.inputDataset = sample[0]
         config.General.requestName = sample_shorthand+'_'+era
         config.Data.outputDatasetTag = sample_shorthand

@@ -11,14 +11,14 @@ class cleaning(Module):
         #using 2017 for 2016 at the moment 
         self.btag_WP = {
           'deepcsv': {
-             "L": {'2016UL': 0.1355, '2017UL': 0.1355, '2018UL': 0.1208},
-             "M": {'2016UL': 0.4506, '2017UL': 0.4506, '2018UL': 0.4168},
-             "T": {'2016UL': 0.4506, '2017UL': 0.7738, '2018UL': 0.7665},
+             "L": {'2016ULpreVFP': 0.2027, '2016ULpostVFP': 0.1918, '2017UL': 0.1355, '2018UL': 0.1208},
+             "M": {'2016ULpreVFP': 0.6001, '2016ULpostVFP': 0.5847, '2017UL': 0.4506, '2018UL': 0.4168},
+             "T": {'2016ULpreVFP': 0.8819, '2016ULpostVFP': 0.8767, '2017UL': 0.7738, '2018UL': 0.7665},
           },
           'deepjet': {
-             "L": {'2016UL': 0.0532, '2017UL': 0.0532, '2018UL': 0.0490},
-             "M": {'2016UL': 0.3040, '2017UL': 0.3040, '2018UL': 0.2783},
-             "T": {'2016UL': 0.3040, '2017UL': 0.7476, '2018UL': 0.7100},
+             "L": {'2016ULpreVFP': 0.0508, '2016ULpostVFP': 0.0480, '2017UL': 0.0532, '2018UL': 0.0490},
+             "M": {'2016ULpreVFP': 0.2598, '2016ULpostVFP': 0.2489, '2017UL': 0.3040, '2018UL': 0.2783},
+             "T": {'2016ULpreVFP': 0.6502, '2016ULpostVFP': 0.6377, '2017UL': 0.7476, '2018UL': 0.7100},
           }
         } 
         pass
@@ -33,6 +33,7 @@ class cleaning(Module):
         self.out = wrappedOutputTree
         # -1 should be rejected, 1 is mm, 0 is em
         self.out.branch("channel", "I")
+        self.out.branch("channelIso", "I")
         self.out.branch("nJet30", "I")
         self.out.branch("Jet_passJet30ID", "b", lenVar="nJet")
         self.out.branch("Jet_passDeepJet_L", "b", lenVar="nJet")
@@ -45,8 +46,9 @@ class cleaning(Module):
         pass
 
     def tauVeto(self, Leps, Taus):
+	#Dont need t.idDecayModeNewDMs for tau since its the default
         if len(Leps)==2:
-          return bool(len(filter(lambda t: ((t.p4().DeltaR(Leps[0]) > 0.4 and t.p4().DeltaR(Leps[1]) > 0.4) and t.pt>20 and abs(t.eta)<2.3 and t.idDeepTau2017v2p1VSjet>8), Taus)) > 0)
+          return bool(len(filter(lambda t: ((t.p4().DeltaR(Leps[0]) > 0.4 and t.p4().DeltaR(Leps[1]) > 0.4) and t.pt>20 and abs(t.eta)<2.3 and t.idDeepTau2017v2p1VSjet>8 and abs(t.dz) < 0.2), Taus)) > 0)
         else:
           return True
 
@@ -64,28 +66,34 @@ class cleaning(Module):
         Taus = Collection(event, "Tau")
 
         channel = -1
+        channel_iso = -1
      
-        Leps_em = []
+        Leps_em_iso = []
+        Leps_em_noiso = []
         Leps_mm = []
 
         for e in Electrons:
-          if (e.pt > 24 and abs(e.eta) < 2.5 and e.mvaFall17V2noIso_WP80 and e.convVeto and abs(e.dxy) < 0.045 and abs(e.dz) < 0.2 and e.pfRelIso03_all < 0.1):
-            Leps_em.append(e.p4())
-        nE=len(Leps_em)
+          if (e.pt > 20 and abs(e.eta) < 2.5 and e.mvaFall17V2Iso_WP80 and e.convVeto and abs(e.dxy) < 0.05 and abs(e.dz) < 0.2 and e.lostHits < 2):
+            Leps_em_iso.append(e.p4())
+          if (e.pt > 20 and abs(e.eta) < 2.5 and e.mvaFall17V2noIso_WP80 and e.convVeto and abs(e.dxy) < 0.05 and abs(e.dz) < 0.2 and e.pfRelIso03_all < 0.1 and e.lostHits < 2):
+            Leps_em_noiso.append(e.p4())
+        nE_iso = len(Leps_em_iso)
+        nE_noiso = len(Leps_em_noiso)
         for m in Muons:
-          if (m.pt > 15 and abs(m.eta) < 2.4 and m.tightId and abs(m.dxy) < 0.045 and abs(m.dz) < 0.2 and m.pfRelIso04_all < 0.15):
+          if (m.pt > 15 and abs(m.eta) < 2.4 and m.tightId and abs(m.dxy) < 0.05 and abs(m.dz) < 0.2 and m.pfRelIso04_all < 0.15):
             Leps_mm.append(m.p4())
-            if (m.pt > 24):
-              Leps_em.append(m.p4())
+            Leps_em_iso.append(m.p4())
+            Leps_em_noiso.append(m.p4())
 
-        if nE==1 and not self.tauVeto(Leps_em, Taus) and not self.LepOverlap(Leps_em):
+        if nE_iso==1 and not self.tauVeto(Leps_em_iso, Taus) and not self.LepOverlap(Leps_em_iso):
+          channel_iso = 0
+        if nE_noiso==1 and not self.tauVeto(Leps_em_noiso, Taus) and not self.LepOverlap(Leps_em_noiso):
           channel = 0
-        elif nE==0 and not self.tauVeto(Leps_mm, Taus) and not self.LepOverlap(Leps_mm):
+        elif not self.tauVeto(Leps_mm, Taus) and not self.LepOverlap(Leps_mm):
           channel = 1
-        else:
-          channel = -1
        
         self.out.fillBranch("channel", channel)
+        self.out.fillBranch("channelIso", channel_iso)
 
         passJet30ID = []
         passDeepJet_L = []
@@ -95,13 +103,19 @@ class cleaning(Module):
 #        passDeepCSV_M = []
 
         if channel!=-1:
-          Leps = Leps_em if channel == 0 else Leps_mm
+          if channel == 0:
+            Leps = Leps_em_noiso
+          elif channel_iso == 0:
+            Leps = Leps_em_iso
+          else:
+            Leps = Leps_mm
           for j in jets:
             jp4 = j.p4()
             jpt = j.pt_nom if self.runJEC else j.pt
+            #puID Tight and Loose bits are flipped for 2016 v9
+            puID = (j.puId&1) if '2016' in self.era else (j.puId>>2)&1
+            if ((j.jetId>>1)&1 and abs(j.eta)<4.7 and (puID or jpt > 50) and jp4.DeltaR(Leps[0]) > 0.4 and jp4.DeltaR(Leps[1]) > 0.4) and (jpt > 30):
 
-            if ((j.jetId>>1)&1 and abs(j.eta)<4.7 and ((j.puId>>2)&1 or jpt > 50) and jp4.DeltaR(Leps[0]) > 0.4 and jp4.DeltaR(Leps[1]) > 0.4) and (jpt > 30):
-           
               passJet30ID.append(1) 
 
               if abs(j.eta)<2.5:
@@ -157,7 +171,7 @@ class cleaning(Module):
 
 # define modules using the syntax 'name = lambda : constructor' to avoid having them loaded when not needed
 
-cleaning_2016preVFPUL = lambda: cleaning("2016UL")
-cleaning_2016postVFPUL = lambda: cleaning("2016UL")
+cleaning_2016preVFPUL = lambda: cleaning("2016ULpreVFP")
+cleaning_2016postVFPUL = lambda: cleaning("2016ULpostVFP")
 cleaning_2017UL = lambda: cleaning(era="2017UL")
 cleaning_2018UL = lambda: cleaning("2018UL")

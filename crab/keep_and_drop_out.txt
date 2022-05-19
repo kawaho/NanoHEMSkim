@@ -11,6 +11,7 @@ keep Jet*
 keep MET*
 keep HLT*_IsoMu*
 keep HLT*_IsoTkMu*
+keep HLT_Ele*WPTight_Gsf*
 keep HLT*_Mu*_Ele*
 keep *Weight*
 keep GenPart*

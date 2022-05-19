@@ -26,31 +26,41 @@ def get_das_info(query):
         raise RuntimeError('das.py crashed with error:\n%s' % err+out ) 
     return [i.strip() for i in out.split('\n') if i.strip()]
 
-campaigns = {'2016preVFP':'RunIISummer20UL16NanoAODAPVv2-*', '2016postVFP':'RunIISummer20UL16NanoAODv2-*', '2017':'RunIISummer20UL17NanoAODv2-*', '2018':'RunIISummer20UL18NanoAODv2-*'}
+campaigns = {'2016preVFP':'RunIISummer20UL16NanoAODAPVv9-*', '2016postVFP':'RunIISummer20UL16NanoAODv9-*', '2017':'RunIISummer20UL17NanoAODv9-*', '2018':'RunIISummer20UL18NanoAODv9-*'}
+#campaigns = {'2016preVFP':'RunIISummer20UL16NanoAODAPVv2-*', '2016postVFP':'RunIISummer20UL16NanoAODv2-*', '2017':'RunIISummer20UL17NanoAODv2-*', '2018':'RunIISummer20UL18NanoAODv2-*'}
+#campaigns = {'2016':'*RunIISummer16NanoAODv3*'}
 missing_samples = {'2016preVFP':[], '2016postVFP':[], '2017':[], '2018':[]}
 
-with open("NanoAOD_HEM_MC.json", 'r') as f:
+with open("NanoAOD_HEM_MC_FULL.json", 'r') as f:
   MC_names = json.load(f)
-
+  print(MC_names)
 for year, campaign in campaigns.iteritems():
   print "----------------------Checking MC samples DAG for year %s----------------------"%year
   allsamples = {}
   for MC_shorthand, MC_name in MC_names.iteritems():
     sample = get_das_info("/*%s*/%s/*"%(MC_name,campaign))
     if sample:
-      allsamples[MC_shorthand]=sample
+      allsamples[MC_shorthand]=list(sample)
       print "%s Found!!"%MC_name
       if len(sample) > 1: 
         print "!!%s has duplicates!!"%MC_name
+	for subsample in sample:
+          if 'ext' in subsample:
+            allsamples.setdefault(MC_shorthand+'_ext',[]).append(subsample)
+            allsamples[MC_shorthand].remove(subsample)
+          if 'JMENano' in subsample or 'Pilot' in subsample:
+            allsamples[MC_shorthand].remove(subsample) 
     else:
       print "%s is Missing!!"%MC_name
       missing_samples[year].append(MC_name)
   with open("NanoAODUL_%s_MC.json"%year, 'w') as f:
-    json.dump(allsamples, f, indent=4)
+    json.dump(allsamples, f, indent=4, sort_keys=True)
 with open("MissingSamples.json", 'w') as f:
-  json.dump(missing_samples, f, indent=4)
+  json.dump(missing_samples, f, indent=4, sort_keys=True)
 
-campaigns = {'2016':'Run2016*UL2016_MiniAODv1_NanoAODv2-v*', '2017':'Run2017*-UL2017_MiniAODv1_NanoAODv2-v*', '2018':'Run2018*-UL2018_MiniAODv1_NanoAODv2-*'}
+#campaigns = {'2016':'*RunIISummer16NanoAODv3*'}
+campaigns = {'2016':'Run2016*UL2016_MiniAODv2_NanoAODv9-v*', '2017':'Run2017*-UL2017_MiniAODv2_NanoAODv9-v*', '2018':'Run2018*-UL2018_MiniAODv2_NanoAODv9-*'}
+#campaigns = {'2016':'Run2016*UL2016_MiniAODv1_NanoAODv2-v*', '2017':'Run2017*-UL2017_MiniAODv1_NanoAODv2-v*', '2018':'Run2018*-UL2018_MiniAODv1_NanoAODv2-*'}
 dataNames = ['SingleMuon']
 for year, campaign in campaigns.iteritems():
   print "----------------------Checking DATA samples DAG for year %s----------------------"%year
@@ -75,11 +85,11 @@ for year, campaign in campaigns.iteritems():
         allsamplespreVFP[shorthand2016] = names2016
  
     with open("NanoAODUL_2016preVFP_data.json", 'w') as f:
-      json.dump(allsamplespreVFP, f, indent=4)
+      json.dump(allsamplespreVFP, f, indent=4, sort_keys=True)
     with open("NanoAODUL_2016postVFP_data.json", 'w') as f:
-      json.dump(allsamplespostVFP, f, indent=4)
+      json.dump(allsamplespostVFP, f, indent=4, sort_keys=True)
   else:
     with open("NanoAODUL_%s_data.json"%year, 'w') as f:
-      json.dump(allsamples, f, indent=4)
+      json.dump(allsamples, f, indent=4, sort_keys=True)
 
 
